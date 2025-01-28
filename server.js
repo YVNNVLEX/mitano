@@ -19,6 +19,10 @@ const PAIRING_TIMEOUT = 10000 // 10 secondes
 io.on("connection", (socket) => {
   console.log("Nouvelle connexion:", socket.id)
 
+  socket.on("error", (error) => {
+    console.error("Erreur de socket:", error);
+  });
+  
   users.set(socket.id, { state: "waiting" })
 
   socket.on("ready", async () => {

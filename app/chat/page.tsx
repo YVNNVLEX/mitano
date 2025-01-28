@@ -13,6 +13,7 @@ export default function ChatPage() {
   const [isConnected, setIsConnected] = useState(false)
   const [isCameraOn, setIsCameraOn] = useState(true)
   const [isMicOn, setIsMicOn] = useState(true)
+  const [isWaiting, setIsWaiting] = useState(true);
   const socketRef = useRef<Socket | null>(null)
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null)
 
@@ -58,8 +59,16 @@ export default function ChatPage() {
   }
 
   useEffect(() => {
-    const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3000")
+    const socket = io("http://localhost:3001")
     socketRef.current = socket
+
+    socket.on("connect_error", (error) => {
+      console.error("Erreur de connexion:", error);
+    });
+
+    socket.on("disconnect", (reason) => {
+      console.log("Déconnecté:", reason);
+    });
 
     socket.on("paired", async ({ roomId }) => {
       console.log("Jumelé dans la room:", roomId)
